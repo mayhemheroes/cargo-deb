@@ -1,7 +1,7 @@
 project: cargo-deb
 target: fuzz-process-deep
 
-image: ghcr.io/nottirb/cargo-deb:latest
+# image: ghcr.io/nottirb/cargo-deb:latest
 
 cmds:
     - cmd: /fuzz_process_deep
