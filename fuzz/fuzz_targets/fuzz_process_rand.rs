@@ -251,11 +251,6 @@ fn main() {
                 // Fuzz the input at a random split index
                 let split_index = rng.gen_range(0..=input.len());
                 fuzz_input(input, split_index);
-
-                // Fuzz the input at every possible split index
-                /*for split_index in 0..=input.len() {
-                    fuzz_input(input, split_index);
-                }*/
             }
         });
     }
