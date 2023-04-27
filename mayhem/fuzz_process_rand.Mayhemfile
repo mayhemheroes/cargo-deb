@@ -1,8 +1,6 @@
 project: cargo-deb
 target: fuzz-process-rand
 
-# image: ghcr.io/nottirb/cargo-deb:latest
-
 cmds:
     - cmd: /fuzz_process_rand
 
