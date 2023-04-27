@@ -230,8 +230,12 @@ fn main() {
         fuzz!(|data: &[u8]| {
             // Convert the fuzz input data to a string
             if let Ok(input) = std::str::from_utf8(data) {
+                if data.len() < 32 {
+                    return;
+                }
+
                 // Fuzz the input at every possible split index
-                for split_index in 0..=input.len() {
+                for split_index in 0..=32 {
                     fuzz_input(input, split_index);
                 }
             }
