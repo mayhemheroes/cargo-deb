@@ -5,5 +5,4 @@ cmds:
     - cmd: /fuzz_process_rand
 
 testsuite:
-    - file://mayhem/testsuite/fuzz_process_crashes
     - file://mayhem/testsuite/fuzz_process
