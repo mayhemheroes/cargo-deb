@@ -3,6 +3,9 @@ use cargo_deb::*;
 use cargo_deb::control::ControlArchiveBuilder;
 use std::path::Path;
 use std::fs;
+use rand::{Rng, SeedableRng};
+use rand_pcg::Pcg64;
+use std::collections::HashMap;
 
 struct CliOptions {
     no_build: bool,
@@ -234,9 +237,35 @@ fn main() {
                     return;
                 }
 
+                // Create a seed for rng
+                let mut seed = [0u8; 32];
+                for (dst, src) in seed.iter_mut().zip(data.iter()) {
+                    *dst = *src;
+                }
+
+                let mut rng = Pcg64::from_seed(seed);
+
                 // Fuzz the input at every possible split index
                 for split_index in 0..=32 {
                     fuzz_input(input, split_index);
+                }
+
+                // Use Fisher-Yates shuffle algorithm to generate unique random split indices
+                let num_indices = 100.min(data.len());
+                let mut selected = HashMap::new();
+
+                for i in 0..num_indices {
+                    let j = rng.gen_range(i..data.len());
+                    let i_value = selected.get(&i).cloned().unwrap_or(i);
+                    let j_value = selected.get(&j).cloned().unwrap_or(j);
+                    selected.insert(i, j_value);
+                    selected.insert(j, i_value);
+                }
+
+                // Call fuzz_input with the shuffled indices
+                for i in 0..num_indices {
+                    let index = selected.get(&i).cloned().unwrap_or(i);
+                    fuzz_input(input, index);
                 }
             }
         });
