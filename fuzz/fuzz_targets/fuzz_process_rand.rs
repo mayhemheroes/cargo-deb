@@ -4,7 +4,7 @@ use cargo_deb::control::ControlArchiveBuilder;
 use std::path::Path;
 use std::fs;
 use rand::{Rng, SeedableRng};
-use rand::rngs::StdRng;
+use rand_pcg::Pcg64;
 
 struct CliOptions {
     no_build: bool,
@@ -246,7 +246,7 @@ fn main() {
                     *dst = *src;
                 }
 
-                let mut rng = StdRng::from_seed(seed);
+                let mut rng = Pcg64::from_seed(seed);
 
                 // Fuzz the input at a random split index
                 let split_index = rng.gen_range(0..=input.len());

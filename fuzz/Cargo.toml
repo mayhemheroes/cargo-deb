@@ -11,10 +11,10 @@ cargo-fuzz = true
 [dependencies]
 honggfuzz = "0.5.55"
 rand = "0.8.5"
-#cargo-deb = "1.42.2"
 tempfile = "3.2.0"
 log = "0.4.17"
 rayon = "1.6.1"
+rand_pcg = "0.3.1"
 
 [dependencies.cargo-deb]
 path = ".."
