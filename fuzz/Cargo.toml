@@ -1,0 +1,32 @@
+[package]
+name = "cargo-deb-fuzz"
+version = "0.0.0"
+authors = ["Automatically generated"]
+publish = false
+edition = "2018"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+honggfuzz = "0.5.55"
+rand = "0.8.5"
+tempfile = "3.2.0"
+log = "0.4.17"
+rayon = "1.6.1"
+rand_pcg = "0.3.1"
+
+[dependencies.cargo-deb]
+path = ".."
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "fuzz_process_rand"
+path = "fuzz_targets/fuzz_process_rand.rs"
+
+[[bin]]
+name = "fuzz_process_deep"
+path = "fuzz_targets/fuzz_process_deep.rs"

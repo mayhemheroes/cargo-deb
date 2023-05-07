@@ -1,0 +1,8 @@
+project: cargo-deb
+target: fuzz-process-deep
+
+cmds:
+    - cmd: /fuzz_process_deep
+
+testsuite:
+    - file://mayhem/testsuite/fuzz_process
