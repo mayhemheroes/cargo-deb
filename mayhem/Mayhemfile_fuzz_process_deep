@@ -1,0 +1,11 @@
+# Mayhem target: cargo-deb's in-process zopfli gzip compressor (the "deep" gzip path used to build
+# the .deb data tarball; cargo_deb::compress::select_compressor(false, Format::Gzip, false)), built
+# by mayhem/build.sh via cargo-fuzz as a libFuzzer binary at /mayhem/fuzz_process_deep. Target name
+# `fuzz-process-deep` preserved from the old fork for Mayhem corpus/defect continuity.
+project: cargo-deb
+target: fuzz-process-deep
+testsuite:
+  - file:///mayhem/mayhem/testsuite/fuzz_process
+cmds:
+  - cmd: /mayhem/fuzz_process_deep
+    libfuzzer: true

@@ -1,0 +1,52 @@
+# Additive cargo-fuzz crate for the Mayhem two-branch model.
+#
+# Upstream kornelski/cargo-deb ships NO `fuzz/` dir, and the OLD mayhemheroes fork referenced a
+# honggfuzz `fuzz/` crate that was never committed to any ref (the Dockerfile COPYd binaries that
+# never existed). So this harness is RECONSTRUCTED against the CURRENT upstream library crate
+# (`cargo_deb`). It drives two real, public, byte/str-taking entry points of the .deb-building
+# library:
+#   * fuzz_process_deep -> cargo_deb::util::compress::{select_compressor,Compressor,Format}
+#         (the in-process gzip/zopfli compressor used to build the .deb data tarball)
+#   * fuzz_process_rand -> cargo_deb::util::wordsplit::WordSplit::split_by_chars
+#         (the Debian control-field "extended description" line formatter)
+# Target NAMES (fuzz_process_deep / fuzz_process_rand) are preserved from the old fork's Mayhemfiles
+# for Mayhem corpus/defect continuity. Built on libfuzzer-sys 0.4 via
+# `cargo fuzz build --fuzz-dir mayhem/fuzz`. Purely additive — no upstream file is touched.
+[package]
+name = "cargo-deb-mayhem-fuzz"
+version = "0.0.0"
+authors = ["Mayhem integration"]
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[workspace]
+members = ["."]
+
+[dependencies]
+libfuzzer-sys = "0.4"
+# The fuzzed crate (cargo-deb's library, crate name `cargo_deb`) is the repo root, two levels up.
+# Default features (lzma + debug-id) keep the in-process xz path available; gzip path falls back to
+# the always-present zopfli encoder. No system compressor binaries are invoked.
+# The package is named `cargo-deb` (hyphen); its library is `cargo_deb` (underscore), so we alias it.
+cargo_deb = { package = "cargo-deb", path = "../..", default-features = true }
+
+# Decoders used ONLY by the oracle (tests/oracle.rs) to verify the compressors round-trip. They are
+# never linked into the libFuzzer binaries.
+[dev-dependencies]
+flate2 = { version = "1", default-features = false, features = ["zlib-rs"] }
+xz2 = "0.1"
+
+[[bin]]
+name = "fuzz_process_deep"
+path = "fuzz_targets/fuzz_process_deep.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_process_rand"
+path = "fuzz_targets/fuzz_process_rand.rs"
+test = false
+doc = false

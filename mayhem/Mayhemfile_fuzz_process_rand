@@ -1,0 +1,11 @@
+# Mayhem target: cargo-deb's in-process xz (lzma) compressor (the DEFAULT codec used to build the
+# .deb data tarball; cargo_deb::compress::select_compressor(true, Format::Xz, false)), built by
+# mayhem/build.sh via cargo-fuzz as a libFuzzer binary at /mayhem/fuzz_process_rand. Target name
+# `fuzz-process-rand` preserved from the old fork for Mayhem corpus/defect continuity.
+project: cargo-deb
+target: fuzz-process-rand
+testsuite:
+  - file:///mayhem/mayhem/testsuite/fuzz_process
+cmds:
+  - cmd: /mayhem/fuzz_process_rand
+    libfuzzer: true
